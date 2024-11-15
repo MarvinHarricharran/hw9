@@ -1,0 +1,54 @@
+Abdullah Al Iman, Marvin Harricharran, Flamur Kukaj, Alicia Persad
+
+
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+install.packages("haven")
+library(readr)
+install.packages("readr")
+library(haven)
+
+
+
+setwd("C:/Users/marvi/Downloads/acs_couples")
+load("ACS_2021_couples.Rdata")
+
+
+ols_out1 <- lm(he_more_than_5yrs_than_her ~ educ_hs + educ_somecoll + educ_college + educ_advdeg + AGE, data = trad_data)
+
+#  OLS Model
+pred_vals_ols1 <- predict(ols_out1, trad_data)
+
+# Classify predictions 
+pred_model_ols1 <- as.integer(pred_vals_ols1 > mean(pred_vals_ols1))
+
+
+table(pred = pred_model_ols1, true = trad_data$he_more_than_5yrs_than_her)
+
+
+# Logit Model
+model_logit1 <- glm(he_more_than_5yrs_than_her ~ educ_hs + educ_somecoll + educ_college + educ_advdeg + AGE,
+                    data = trad_data, family = binomial)
+
+
+summary(model_logit1)
+
+# Predict 
+pred_vals_logit <- predict(model_logit1, trad_data, type = "response")
+
+# Classify predictions 
+pred_model_logit1 <- as.integer(pred_vals_logit > mean(pred_vals_logit))
+
+
+table(pred = pred_model_logit1, true = trad_data$he_more_than_5yrs_than_her)
+
+
+Based on the results from the OLS model and Logit model , we can conclude that the Logit model was more accurate as its precision was 57.06% compared to 55.01% for the OLS model.
+
+Articles: 
+"On the impact of jet fuel cost on airlines’ capacity choice: Evidence from the U.S. domestic markets"
+This article examines how fuel costs, demand, and unemployment impact airline choices regarding flight frequency, plane size, and load. The results show that when fuel costs rise, airlines use bigger planes, fly less often, and adjust capacity to keep flights full.
+
+"U.S. Passenger Carrier Delay Costs"
+In 2023, U.S. airlines spent an average of $100.80 per flight minute, with fuel costs down 11.6% but labor up 12.7%. Delays add billions in extra costs for airlines and passengers, underscoring the need for better air traffic control and infrastructure to handle rising demand.
